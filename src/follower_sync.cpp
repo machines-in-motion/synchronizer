@@ -1,10 +1,10 @@
-#include "synchronizer/private/slave_sync.hpp"
+#include "synchronizer/private/follower_sync.hpp"
 
 
 namespace synchronizer {
 
 
-  Slave_sync::Slave_sync(std::string memory_segment,
+  Follower_sync::Follower_sync(std::string memory_segment,
 			 double async_frequency)
     : memory_segment_(memory_segment),
       async_frequency_(async_frequency)
@@ -12,23 +12,23 @@ namespace synchronizer {
     reinit();
   }
 
-  Slave_sync::~Slave_sync(){
+  Follower_sync::~Follower_sync(){
     clean_memory();
   }
 
-  void Slave_sync::clean_memory(){
+  void Follower_sync::clean_memory(){
     shared_memory::LockedConditionVariable::clean(memory_segment_, "cond_var");
     shared_memory::clear_shared_memory(memory_segment_);
   }
 
   // restarting fresh, i.e recreating the condition variable and the
   // shared memory segment
-  void Slave_sync::reinit(){
+  void Follower_sync::reinit(){
     clean_memory();
     cv_.reset(new shared_memory::LockedConditionVariable(memory_segment_,"cond_var",false));
-    // will be used to get info from the master that sync mode changed
+    // will be used to get info from the leader that sync mode changed
     shared_memory::set(memory_segment_,"sync",false);
-    // will be used to inform the master request to change mode
+    // will be used to inform the leader request to change mode
     // has been received
     shared_memory::set(memory_segment_,"sync_shake",false);
     is_sync_mode_ = false;
@@ -39,17 +39,17 @@ namespace synchronizer {
   }
   
   
-  void Slave_sync::wait(){
+  void Follower_sync::wait(){
     cv_->wait();
   }
 
-  void Slave_sync::notify(){
+  void Follower_sync::notify(){
     cv_->notify_one();
   }
 
   // returning true if this instance should be destroyed
   // and replaced by a new one
-  bool Slave_sync::pulse(){
+  bool Follower_sync::pulse(){
     // reading from shared memory which mode
     // we are in
     bool reset = read_sync_mode();
@@ -72,13 +72,13 @@ namespace synchronizer {
 
   // returns true if reset is requested, i.e.
   // sync mode just been turned off
-  bool Slave_sync::read_sync_mode(){
-    // reading from the shared memory what mode the master
+  bool Follower_sync::read_sync_mode(){
+    // reading from the shared memory what mode the leader
     // requests
     shared_memory::get(memory_segment_,"sync",is_sync_mode_);
     if(is_sync_mode_ && !previous_mode_){
       // switching from async to sync
-      // telling the master we go the request
+      // telling the leader we go the request
       shared_memory::set(memory_segment_,"sync_shake",true);
       // init the condition variable 
       cv_->lock_scope();

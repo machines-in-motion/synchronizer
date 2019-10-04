@@ -1,5 +1,5 @@
-#include "synchronizer/master.hpp"
-#include "synchronizer/slave.hpp"
+#include "synchronizer/leader.hpp"
+#include "synchronizer/follower.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <vector>
@@ -10,16 +10,16 @@ using namespace synchronizer;
 
 PYBIND11_MODULE(synchronizer,m){
 
-  pybind11::class_<Slave>(m,"Slave")
+  pybind11::class_<Follower>(m,"Follower")
     .def(pybind11::init<std::string,double>())
-    .def("pulse",&Slave::pulse);
+    .def("pulse",&Follower::pulse);
 
-  pybind11::class_<Master>(m,"Master")
+  pybind11::class_<Leader>(m,"Leader")
     .def(pybind11::init<std::string>())
-    .def("pulse",&Master::pulse)
-    .def("start_sync",&Master::start_sync,
+    .def("pulse",&Leader::pulse)
+    .def("start_sync",&Leader::start_sync,
 	 pybind11::arg("timeout_us")=-1)
-    .def("stop_sync",&Master::stop_sync);
+    .def("stop_sync",&Leader::stop_sync);
     
 }
 

@@ -1,4 +1,4 @@
-#include "synchronizer/slave.hpp"
+#include "synchronizer/follower.hpp"
 
 #include <stdlib.h>
 #include <time.h>
@@ -17,7 +17,7 @@ void execute(){
   shared_memory::clear_shared_memory(COUNT_MEM);
   shared_memory::set<bool>(COUNT_MEM,"running",true);
   
-  synchronizer::Slave s(SYNC_MEM,ASYNC_FREQUENCY);
+  synchronizer::Follower s(SYNC_MEM,ASYNC_FREQUENCY);
 
   int count = 0;
   shared_memory::set<int>(COUNT_MEM,"count",count);
@@ -35,7 +35,7 @@ void execute(){
     count++;
     shared_memory::set<int>(COUNT_MEM,"count",count);
     
-    std::cout << "\t\tslave: " << count << "\n";
+    std::cout << "\t\tfollower: " << count << "\n";
 
     s.pulse();
     

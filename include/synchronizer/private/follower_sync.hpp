@@ -11,15 +11,15 @@
 
 namespace synchronizer {
 
-  class Slave_sync
+  class Follower_sync
 
   {
 
   public:
   
-    Slave_sync(std::string memory_segment_,
+    Follower_sync(std::string memory_segment_,
 	       double async_frequency);
-    ~Slave_sync();
+    ~Follower_sync();
     void reinit();
     void clean_memory();
     void wait();

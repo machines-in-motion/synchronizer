@@ -24,10 +24,10 @@ DEFINE_OS()
 ###############
 
 add_library(synchronizers 
-  src/slave_sync.cpp
-  src/master_sync.cpp
-  src/slave.cpp
-  src/master.cpp
+  src/follower_sync.cpp
+  src/leader_sync.cpp
+  src/follower.cpp
+  src/leader.cpp
   )
 target_link_libraries(synchronizers
   ${catkin_LIBRARIES}
@@ -37,13 +37,13 @@ target_link_libraries(synchronizers
 # demos #
 #########
 
-add_executable(demo_slave
-  demos/demo_slave.cpp)
-target_link_libraries(demo_slave synchronizers)
+add_executable(demo_follower
+  demos/demo_follower.cpp)
+target_link_libraries(demo_follower synchronizers)
 
-add_executable(demo_master
-  demos/demo_master.cpp)
-target_link_libraries(demo_master synchronizers)
+add_executable(demo_leader
+  demos/demo_leader.cpp)
+target_link_libraries(demo_leader synchronizers)
 
 ##############
 # unit tests #

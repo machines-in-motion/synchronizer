@@ -1,4 +1,4 @@
-#include "synchronizer/master.hpp"
+#include "synchronizer/leader.hpp"
 
 #include <stdlib.h>
 #include <time.h>
@@ -11,17 +11,17 @@
 #define COUNT_MEM "count_mem"
 
 
-// demo_slave or demo_slave.py should be started first.
+// demo_follower or demo_follower.py should be started first.
 
 // expected results:
-// demo_slave runs at 3 Hz.
-// when demo_master starts, it switches to run to
+// demo_follower runs at 3 Hz.
+// when demo_leader starts, it switches to run to
 // "as fast as possible" (start_sync is called)
 // then back to 3Hz ("stop_sync" is called),
 // then back to as fast as possible (start_sync)
 
 
-void looping(synchronizer::Master &s)
+void looping(synchronizer::Leader &s)
 {
   for (int iteration=0;iteration<50000;iteration++)
     {
@@ -29,7 +29,7 @@ void looping(synchronizer::Master &s)
       shared_memory::get<int>(COUNT_MEM,"count",count);
       count++;
       shared_memory::set<int>(COUNT_MEM,"count",count);
-      std::cout << "\t\tmaster: " << count << "\n";
+      std::cout << "\t\tleader: " << count << "\n";
       s.pulse();
     }
 }
@@ -38,7 +38,7 @@ void looping(synchronizer::Master &s)
 void execute()
 {
 
-  synchronizer::Master s(SYNC_MEM);
+  synchronizer::Leader s(SYNC_MEM);
 
   s.start_sync(1000000);
   looping(s);
@@ -53,7 +53,7 @@ void execute()
   
   std::cout << "EXIT\n";
   
-  // turning off slave
+  // turning off follower
   shared_memory::set<bool>(COUNT_MEM,"running",false);
   
 }

@@ -10,12 +10,12 @@
 
 namespace synchronizer {
 
-  class Master_sync
+  class Leader_sync
   {
 
   public:
   
-    Master_sync(std::string memory_segment);
+    Leader_sync(std::string memory_segment);
     void wait();
     void notify();
     void pulse();

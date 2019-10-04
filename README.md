@@ -2,10 +2,10 @@
 
 ## Overview
 
-Allows a master process to synchronize with a slave process.
+Allows a leader process to synchronize with a follower process.
 The mode (synchronous or asynchronous) can be changed programmatically during runtime.
 
-For exemple, in the slave process:
+For exemple, in the follower process:
 
 ```cpp
 
@@ -13,7 +13,7 @@ For exemple, in the slave process:
 double frequency = 200;
 
 # will have loop running sync or async
-synchronizer::Slave synchronizer("synchronizer_id",frequency);
+synchronizer::Follower synchronizer("synchronizer_id",frequency);
 
 while (running)
 {
@@ -24,13 +24,13 @@ while (running)
 }
 
 ```
-and in the master process:
+and in the leader process:
 
 ```cpp
 
-synchronizer::Master master ("synchronizer_id");
+synchronizer::Leader leader ("synchronizer_id");
 
-master.start_sync();
+leader.start_sync();
 for(int i=0;i<1000;i++)
 {
     # code doing thing
@@ -38,33 +38,33 @@ for(int i=0;i<1000;i++)
     # sleeping to get desired frequency
    usleep(1000); # 
 
-    # requesting the slave to run one iteration
-    master.pulse()
+    # requesting the follower to run one iteration
+    leader.pulse()
 
 }
 
-master.stop_sync();
+leader.stop_sync();
 
 ```
 
 The expected behavior:
 
-- when slave is started, it runs at 200Hz
-- when master is started, master and slave run at same frequency (~ 1Khz)
-- when master exit (calls stop_sync), slave returns at 200Hz
+- when follower is started, it runs at 200Hz
+- when leader is started, leader and follower run at same frequency (~ 1Khz)
+- when leader exit (calls stop_sync), follower returns at 200Hz
 
 ## Python
 
 Python bindings are generated via Pybind11. 
-Python/c++ slave/master processes  are compatible one with another (e.g. slave in python, master in cpp)
+Python/c++ follower/leader processes  are compatible one with another (e.g. follower in python, leader in cpp)
 
 ## Demos
 
-For concrete examples (c++ and python), look at the demos folder. Note that the slave must be started before master.
+For concrete examples (c++ and python), look at the demos folder. Note that the follower must be started before leader.
 
 ## Limitation
 
-A slave can be linked to only one master (at a time), and a master to one slave.
+A follower can be linked to only one leader (at a time), and a leader to one follower.
 
 ## Installation and compilation
 
