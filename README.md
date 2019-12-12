@@ -12,11 +12,7 @@ For exemple, in the follower process:
 // running at 200Hz when in async mode
 double frequency = 200;
 
-<<<<<<< 38d2cc46639897d610383ea674a60f2541f9920b
 // will have loop running sync or async
-=======
-# will have loop running sync or async
->>>>>>> initial commit
 synchronizer::Follower synchronizer("synchronizer_id",frequency);
 
 while (running)
@@ -42,11 +38,7 @@ for(int i=0;i<1000;i++)
     // sleeping to get desired frequency
    usleep(1000); 
 
-<<<<<<< 38d2cc46639897d610383ea674a60f2541f9920b
     // requesting the follower to run one iteration
-=======
-    # requesting the follower to run one iteration
->>>>>>> initial commit
     leader.pulse()
 
 }
